@@ -1,4 +1,4 @@
-<h1 class="my-4">Shop Name</h1>
+<h1 class="my-4">Category</h1>
 
 
 
