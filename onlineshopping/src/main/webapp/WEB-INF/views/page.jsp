@@ -82,6 +82,11 @@
 				<%@include file="singleProduct.jsp"%>
 			</c:if>
 			
+			<!-- Loading only when user click Manage Products -->
+			<c:if test="${userClickManageProducts == true}">
+				<%@include file="manageProducts.jsp"%>
+			</c:if>
+			
 			
 
 		</div>
