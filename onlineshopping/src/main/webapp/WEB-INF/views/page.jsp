@@ -26,7 +26,7 @@
 <script>
 	window.menu = '${title}';
 	
-	window.contextRoot = '${contextRoot}';
+	window.contextRoot = '${contextRoot}'
 	
 	
 </script>
@@ -94,7 +94,11 @@
 
 		<!-- Footer comes here-->
 		<%@include file="./shared/footer.jsp"%>
-
+		
+		<!-- Jquery validator-->
+		<script src="${js}/jquery.validate.js"></script>
+		<script src="${js}/jquery.validate.min.js"></script>
+		
 		<!-- Bootstrap core JavaScript -->
 		<script src="${js}/jquery.min.js"></script>
 		<script src="${js}/popper.min.js"></script>
@@ -105,6 +109,9 @@
 		
 		<!-- DataTable bootstrap Plugin -->
 		<script src="${js}/dataTables.bootstrap.js"></script>
+		
+		<!--Bootbox js plugins -->
+		<script src="${js}/bootbox.min.js"></script>
 		
 		<!-- Self coded javascript -->
 		<script src="${js}/myapp.js"></script>

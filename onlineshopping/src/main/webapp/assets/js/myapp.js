@@ -47,7 +47,7 @@ $(function() {
 			
 		}
 		
-		var dataTable=$table.DataTable({
+		$table.DataTable({
 			
 			lengthMenu: [[3,5,10,-1],['3 Records', '5 Records', '10 Records', 'All Records']],
 			pageLength: 5,
@@ -140,8 +140,245 @@ $(function() {
 		
 	}
 	
+	// bootbox js pluins
+	$('.switch input[type="checkbox"]').on('change', function(){
+		
+		var checkbox = $(this);
+		var checked = checkbox.prop('checked');
+		var dMsg = (checked)? 'You want to activate the product?':
+							   'You want to deactivate the product?';
+		var value = checkbox.prop('value');
+		
+		bootbox.confirm({
+			
+			size: 'medium',
+			title: 'Product Activation & Deactivation',
+			message: dMsg,
+			callback: function(confirmed){
+				if(confirmed){
+					
+					console.log(value);
+					bootbox.alert({
+						size: 'medium',
+						title: 'Information',
+						message: 'You are going to perform operation on product' + value
+					}); // end of bootbox alert
+					
+				}// end of if confirmed
+				else{
+					checkbox.prop('checked', !checked);
+				}// end of else
+				
+			}//end of callback
+			
+		}); // end of bootbox
+		
+	}); //end of switch on change function
 	
-});
+	//--------------------------------------------------------------------
+	//data table for Admin
+	//--------------------------------------------------------------------
+	
+	var $adminProductsTable = $('#adminProductsTable');
+	
+	//execute the below code only where we have this table
+	if($adminProductsTable.length){
+		
+		//console.log('Inside the table!');
+		
+		var jsonUrl = window.contextRoot + '/json/data/admin/all/products';
+		
+		
+		$adminProductsTable.DataTable({
+			
+			lengthMenu: [[10,30,50,-1],['10 Records', '30 Records', '50 Records', 'All Records']],
+			pageLength: 30,
+			ajax:{
+				
+				url: jsonUrl,
+				dataSrc: ''
+				
+			},
+			
+			columns:[
+			         
+			         {
+			        	data: 'id' 
+			         },
+			         
+			         {
+			        	data: 'code',
+			        	bSortable: false,
+			        	mRender: function(data, type, row){
+			        		
+			        		return '<img src="'+window.contextRoot+'/resources/images/'+data+'.jpg" class="adminDataTableImg"/>';
+			        		
+			        	}
+			        	 
+			         },
+			         
+			         {
+			        	 data: 'name'
+			         },
+			         {
+			        	 data: 'brand'
+			         },
+			         {
+			        	 data: 'quantity',
+			        	 mRender: function(data, type, row){
+			        		 
+			        		 if(data < 1){
+			        			 return '<span style="color:red;">Out of Stock!</span>';
+			        		 }
+			        		 
+			        		 return data;
+			        		 
+			        	 }
+			         },
+			         
+			         {
+			        	 data: 'unitPrice',
+			        	 mRender: function(data, type, row){
+			        		 
+			        		 return 'Nu. ' + data
+			        		 
+			        	 }
+			         },
+			         
+			         {
+			        	 
+			        	 data: 'active',
+			        	 bSortable: false,
+			        	 mRender: function(data, type, row){
+			        		 
+			        		 var str = '';
+			        		 str += '<label class="switch">';
+			        		 if(data){
+			        			 str +=	'<input type="checkbox" checked="checked" value="'+row.id+'"/>';
+			        		 }
+			        		 else{
+			        			 str +=	'<input type="checkbox"  value="'+row.id+'"/>';
+			        		 }
+							 str +=	 '<div class="slider"></div></label>';
+							 
+							 return str;
+			        		 
+			        	 } // end of mRender
+			        	
+			        	 
+			        	 
+			         },
+			         
+			         {
+			        	 data: 'id',
+			        	 bSortable : false,
+			        	 mRender: function(data, type, row){
+			        		 var str = '';
+			        		 str += '<a href="'+window.contextRoot+'/manage/'+data+'/product" class="btn btn-warning">';
+							 str += '<span class="glyphicon glyphicon-pencil"></span></a>';
+							 
+							 return str;
+			        	 }
+			         }
+			         
+			         ], //end of column
+			         
+			     initComplete: function(){
+			    	 
+			    	 var api = this.api(); 
+			    	 api.$('.switch input[type="checkbox"]').on('change', function(){
+			    			
+			    			var checkbox = $(this);
+			    			var checked = checkbox.prop('checked');
+			    			var dMsg = (checked)? 'You want to activate the product?':
+			    								   'You want to deactivate the product?';
+			    			var value = checkbox.prop('value');
+			    			
+			    			bootbox.confirm({
+			    				
+			    				size: 'medium',
+			    				title: 'Product Activation & Deactivation',
+			    				message: dMsg,
+			    				callback: function(confirmed){
+			    					if(confirmed){
+			    						
+			    						console.log(value);
+			    						
+			    						var activationUrl = window.contextRoot + '/manage/product/' + value + '/activation';
+			    						
+			    						$.post(activationUrl, function(data) {
+			    							
+			    							bootbox.alert({
+				    							size: 'medium',
+				    							title: 'Information',
+				    							message: data
+				    						}); // end of bootbox alert
+			    							
+			    						}); // end of pot activationUrl
+			    						
+			    						
+			    					}// end of if confirmed
+			    					else{
+			    						checkbox.prop('checked', !checked);
+			    					}// end of else
+			    					
+			    				}//end of callback
+			    				
+			    			}); // end of bootbox
+			    			
+			    		}); //end of switch on change function
+			    	 
+			     }
+			
+			
+			
+			
+		});
+		
+		
+	}
+	
+	// end of data table for Admin
+	
+	//validation code for category
+	
+		var $categoryForm = $('#categoryForm');
+		
+		if($categoryForm.length){
+			
+			$categoryForm.validate({
+				rules : {
+					name : {
+						required : true,
+						minlength : 2
+					},
+					description : {
+						required : true
+					}
+				},
+				message : {
+					name : {
+						required : 'Please add the category name!',
+						minlength : 'The category name should not be less than 2 characters'
+					},
+					description : {
+						required : 'Please add a description for this category!'
+					}
+				},
+				errorElement: 'em',
+				errorPlacement: function(error, element){
+					//add a class of help-block
+					error.addClass('help-block');
+					//add the error element after the input element
+					error.insertAfter(element);
+				}
+			}); // end of category form validate
+			
+		} //end of category form length
+	
+	//end of validation code for category
+	
+}); // end of main function
 
 
 
